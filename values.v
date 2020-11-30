@@ -1,5 +1,5 @@
 const (
-	null_ptr = 0
+	null = 0
 )
 
 struct Value {
@@ -30,8 +30,8 @@ pub mut:
 }
 
 fn (list &List) pop() &Value {
-	if list.tail == null_ptr {
-		return null_ptr
+	if list.tail == null {
+		return null
 	}
 	mut tail := list.tail
 	copy := &Value{
@@ -39,11 +39,11 @@ fn (list &List) pop() &Value {
 		val: tail.val.val
 	}
 	mut the_list := list
-	if tail.prev == null_ptr {
-		the_list.tail = null_ptr
-		the_list.head = null_ptr
+	if tail.prev == null {
+		the_list.tail = null
+		the_list.head = null
 	} else {
-		tail.prev.next = null_ptr
+		tail.prev.next = null
 		the_list.tail = tail.prev
 	}
 	unsafe {
@@ -53,8 +53,8 @@ fn (list &List) pop() &Value {
 }
 
 fn (list &List) poll() &Value {
-	if list.head == null_ptr {
-		return null_ptr
+	if list.head == null {
+		return null
 	}
 	mut head := list.head
 	copy := &Value{
@@ -62,11 +62,11 @@ fn (list &List) poll() &Value {
 		val: head.val.val
 	}
 	mut the_list := list
-	if head.next == null_ptr {
-		the_list.tail = null_ptr
-		the_list.head = null_ptr
+	if head.next == null {
+		the_list.tail = null
+		the_list.head = null
 	} else {
-		head.next.prev = null_ptr
+		head.next.prev = null
 		the_list.head = head.next
 	}
 	unsafe {
@@ -89,8 +89,8 @@ fn (list &List) push(v &Value) {
 fn new_node() &ListNode {
 	return &ListNode{
 		val: &Value{}
-		prev: null_ptr
-		next: null_ptr
+		prev: null
+		next: null
 	}
 }
 
@@ -119,7 +119,7 @@ fn print_list(list &List) {
 	str += '[ '
 	mut head := list.head
 	for {
-		if head == null_ptr {
+		if head == null {
 			break
 		}
 		str += (head.val.to_string() + ' ')
