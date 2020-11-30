@@ -38,7 +38,6 @@ fn (list &List) pop() &Value {
 		typ: tail.val.typ
 		val: tail.val.val
 	}
-	
 	mut the_list := list
 	if tail.prev == null_ptr {
 		the_list.tail = null_ptr
