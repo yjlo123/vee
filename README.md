@@ -15,13 +15,14 @@ hello(names)
 
 Original Runtime Script:
 ```
-let names = []
+let names []
 psh $names 'World' 'yjlo'
 
 #loop
 pol $names name
 jeq $name $nil done
-prt $name
+add hello 'Hello ' $name
+prt $hello
 jmp loop
 
 #done
