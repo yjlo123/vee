@@ -15,17 +15,21 @@ hello(names)
 
 Original Runtime Script:
 ```
+def hello
+ let _names $0
+ #loop
+ pol $_names _name
+ jeq $_name $nil done
+ add _msg 'Hello ' $_name
+ prt $_msg
+ jmp loop
+ #done
+ ret
+end
+
 let names []
 psh $names 'World' 'yjlo'
-
-#loop
-pol $names name
-jeq $name $nil done
-add hello 'Hello ' $name
-prt $hello
-jmp loop
-
-#done
+cal hello $names
 ```
 
 Learn more about the original Runtime Script:  
