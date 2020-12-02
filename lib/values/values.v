@@ -1,3 +1,5 @@
+module values
+
 const (
 	null = 0
 )
@@ -129,7 +131,7 @@ fn print_list(list &List) {
 	println(str)
 }
 
-fn main() {
+pub fn test() {
 	p := build_list([1, 2, 3, 4])
 	print_list(p)
 	mut v := p.pop()
