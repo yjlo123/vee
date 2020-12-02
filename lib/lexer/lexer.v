@@ -16,20 +16,21 @@ enum TokenType {
 }
 
 struct Token {
-	value    string
-	category TokenType
-	line     int
-	pos      int
+pub mut:
+	val  string
+	typ  TokenType
+	line int
+	pos  int
 }
 
 fn (t Token) str() string {
-	return '$t.value\t$t.category\t$t.line,$t.pos'
+	return '($t.val\t$t.typ\t$t.line,$t.pos)'
 }
 
-fn create_token(val string, category TokenType, line, pos int) Token {
+fn create_token(val string, category TokenType, line int, pos int) Token {
 	return Token{
-		value: val
-		category: category
+		val: val
+		typ: category
 		line: line
 		pos: pos
 	}
@@ -71,12 +72,7 @@ pub fn tokenize(s string) []Token {
 				tokens << create_token(token, TokenType.name, lc, cc - token.len)
 				token = ''
 			}
-			tokens << Token{
-				value: s[i].str()
-				category: TokenType.bracket
-				line: lc
-				pos: cc
-			}
+			tokens << create_token(s[i].str(), TokenType.bracket, lc, cc)
 		} else if s[i] in [`\'`, `"`, '`'[0]] {
 			// string
 			q := s[i]
@@ -137,31 +133,25 @@ fn (ast AST) str() string {
 }
 
 pub fn parse(tokens []Token) AST {
-	mut ast_arr := []AST{}
-	mut ast_b_arr := []AST{}
-	ast_arr << AST{
-		tag: 'name'
-		val: 'a'
-		list: []AST{}
+	mut stack := []AST{}
+	for t in tokens {
+		if t.typ == TokenType.name {
+			stack << AST{
+				tag: 'name'
+				val: t.val
+				list: []AST{}
+			}
+		} else if t.typ == TokenType.operator {
+			// TODO, decide num of operands
+			mut operands := []AST{}
+			operands << stack[stack.len-2..stack.len]
+			stack = stack[0..stack.len-2]
+			stack << AST{
+				tag: 'operator'
+				val: t.val
+				list: operands
+			}
+		}
 	}
-	ast_b_arr << AST{
-		tag: 'name'
-		val: 'b'
-		list: []AST{}
-	}
-	ast_b_arr << AST{
-		tag: 'name'
-		val: 'c'
-		list: []AST{}
-	}
-	ast_arr << AST{
-		tag: 'operator'
-		val: '+'
-		list: ast_b_arr
-	}
-	return AST{
-		tag: 'operator'
-		val: '='
-		list: ast_arr
-	}
+	return stack[0]
 }
