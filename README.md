@@ -2,7 +2,7 @@
 Runtime Script II written in [vlang](https://vlang.io/)
 
 Runtime Script II example:
-```
+```v
 fn hello(names) {
 	for name in names {
 		println('Hello ' + name)
@@ -14,7 +14,7 @@ hello(names)
 ```
 
 Original Runtime Script:
-```
+```ruby
 def hello
  let _names $0
  #loop
