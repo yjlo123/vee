@@ -48,9 +48,7 @@ fn (list &List) pop() &Value {
 		tail.prev.next = null
 		the_list.tail = tail.prev
 	}
-	unsafe {
-		free(tail)
-	}
+	unsafe {free(tail)}
 	return copy
 }
 
@@ -71,9 +69,7 @@ fn (list &List) poll() &Value {
 		head.next.prev = null
 		the_list.head = head.next
 	}
-	unsafe {
-		free(head)
-	}
+	unsafe {free(head)}
 	return copy
 }
 

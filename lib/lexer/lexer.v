@@ -13,6 +13,8 @@ enum TokenType {
 	newline
 	bracket
 	operator
+	func
+	eof
 }
 
 struct Token {
@@ -28,9 +30,13 @@ fn (t Token) str() string {
 }
 
 fn create_token(val string, category TokenType, line int, pos int) Token {
+	mut cat := category
+	if category == TokenType.name && val == 'fn' {
+		cat = TokenType.func
+	}
 	return Token{
 		val: val
-		typ: category
+		typ: cat
 		line: line
 		pos: pos
 	}
@@ -89,7 +95,7 @@ pub fn tokenize(s string) []Token {
 		} else if s[i] >= `0` && s[i] <= `9` {
 			// number
 			for {
-				if s[i] < `0` || s[i] > `9` {
+				if i >= s.len || s[i] < `0` || s[i] > `9` {
 					tokens << create_token(token, TokenType.number, lc, cc - token.len)
 					token = ''
 					break
@@ -107,51 +113,6 @@ pub fn tokenize(s string) []Token {
 	if token.len > 0 {
 		tokens << create_token(token, TokenType.name, lc, cc - token.len)
 	}
+	tokens << create_token('', TokenType.eof, lc, cc)
 	return tokens
-}
-
-struct AST {
-pub mut:
-	tag  string
-	val  string
-	list []AST
-}
-
-fn (ast AST) str() string {
-	mut list_content := ''
-	for i, n in ast.list {
-		if i > 0 {
-			list_content += ' '
-		}
-		list_content += '$n'
-	}
-	if list_content.len > 0 {
-		return '${ast.tag}($ast.val)[$list_content]'
-	} else {
-		return '${ast.tag}($ast.val)'
-	}
-}
-
-pub fn parse(tokens []Token) AST {
-	mut stack := []AST{}
-	for t in tokens {
-		if t.typ == TokenType.name {
-			stack << AST{
-				tag: 'name'
-				val: t.val
-				list: []AST{}
-			}
-		} else if t.typ == TokenType.operator {
-			// TODO, decide num of operands
-			mut operands := []AST{}
-			operands << stack[stack.len-2..stack.len]
-			stack = stack[0..stack.len-2]
-			stack << AST{
-				tag: 'operator'
-				val: t.val
-				list: operands
-			}
-		}
-	}
-	return stack[0]
 }
