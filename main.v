@@ -4,23 +4,31 @@ import lib.parser
 
 // import lib.util
 // import lib.values
-
 fn main() {
-	tokens := lexer.tokenize('a = 8 - (2 + 3) * 9
-b = a + 5
-print(1+2, a, b*2)
-print(b)
-fn hello(a) {
-	var = 12 + 4
-	print(a)
-}')
+	tokens := lexer.tokenize('
+fn add(c, b) {
+	return c + b
+}
+fn double(a) {
+	return a * 2
+}
+fn hello() {
+	print("hello")
+}
+print(double(2+(4-1)*3))
+print(double(add(add(1, 4+5), 5)))
+hello()
+')
 	ast := parser.parse(tokens)
 	println('====== AST ======')
 	println(ast)
 	println('=================')
-	mut env := map[string]string{}
+	mut env := evaluator.Env{
+		vars: map[string]string{}
+		funcs: map[string][]parser.AST{}
+	}
 	evaluator.eval(ast, mut env)
-	// println(env)
+	println(env)
 	// values.test()
 	// util.test()
 }

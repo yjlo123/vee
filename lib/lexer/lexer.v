@@ -14,6 +14,7 @@ enum TokenType {
 	bracket
 	operator
 	func
+	ret
 	eof
 }
 
@@ -26,13 +27,18 @@ pub mut:
 }
 
 fn (t Token) str() string {
-	return '($t.val\t$t.typ\t$t.line,$t.pos)'
+	return '($t.val)'
+	// return '($t.val\t$t.typ\t$t.line,$t.pos)'
 }
 
 fn create_token(val string, category TokenType, line int, pos int) Token {
 	mut cat := category
-	if category == TokenType.name && val == 'fn' {
-		cat = TokenType.func
+	if category == TokenType.name {
+		if val == 'fn' {
+			cat = TokenType.func
+		} else if val == 'return' {
+			cat = TokenType.ret
+		}
 	}
 	return Token{
 		val: val
@@ -92,7 +98,7 @@ pub fn tokenize(s string) []Token {
 				token += s[i].str()
 				i++
 			}
-		} else if s[i] >= `0` && s[i] <= `9` {
+		} else if s[i] >= `0` && s[i] <= `9` && token.len == 0 {
 			// number
 			for {
 				if i >= s.len || s[i] < `0` || s[i] > `9` {
