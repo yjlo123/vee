@@ -27,7 +27,7 @@ pub mut:
 }
 
 fn (t Token) str() string {
-	return '($t.val)'
+	return '($t.val)[$t.typ]'
 	// return '($t.val\t$t.typ\t$t.line,$t.pos)'
 }
 

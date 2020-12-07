@@ -4,18 +4,50 @@ const (
 	null = 0
 )
 
-struct Value {
-pub mut:
-	typ string
+struct Integer {
+	val int
+}
+
+struct String {
 	val string
 }
 
-pub fn (v Value) str() string {
-	return '${v.val}($v.typ)'
+struct Nil {}
+
+type Value = Integer | String | List | Nil
+
+fn (v Value) add_one() Value {
+	if v.type_name() == 'lib.values.Integer' {
+		num := v as Integer
+		return Value(Integer{num.val + 1})
+	} else if v.type_name() == 'lib.values.String' {
+		s := v as String
+		return Value(String{s.val + '1'})
+	} else if v.type_name() == 'lib.values.List' {
+		l := v as List
+		l.push(&Value(String{val: 'new'}))
+		return Value(l)
+	}
+	return Value(Nil{})
+}
+
+pub fn (v Integer) to_string() string {
+	return '${v.val}(int)'
+}
+
+pub fn (v String) to_string() string {
+	return '${v.val}(str)'
 }
 
 pub fn (v Value) to_string() string {
-	return v.str()
+	if v.type_name() == 'lib.values.Integer' {
+		num := v as Integer
+		return num.to_string()
+	} else if v.type_name() == 'lib.values.String' {
+		s := v as String
+		return s.to_string()
+	}
+	return ''
 }
 
 struct ListNode {
@@ -36,10 +68,7 @@ fn (list &List) pop() &Value {
 		return null
 	}
 	mut tail := list.tail
-	copy := &Value{
-		typ: tail.val.typ
-		val: tail.val.val
-	}
+	//copy := &Value{val: tail.val.val}
 	mut the_list := list
 	if tail.prev == null {
 		the_list.tail = null
@@ -48,8 +77,8 @@ fn (list &List) pop() &Value {
 		tail.prev.next = null
 		the_list.tail = tail.prev
 	}
-	unsafe {free(tail)}
-	return copy
+	//unsafe {free(tail)}
+	return tail.val
 }
 
 fn (list &List) poll() &Value {
@@ -57,10 +86,7 @@ fn (list &List) poll() &Value {
 		return null
 	}
 	mut head := list.head
-	copy := &Value{
-		typ: head.val.typ
-		val: head.val.val
-	}
+	//copy := &Value(Integer{val: head.val.val})
 	mut the_list := list
 	if head.next == null {
 		the_list.tail = null
@@ -69,8 +95,8 @@ fn (list &List) poll() &Value {
 		head.next.prev = null
 		the_list.head = head.next
 	}
-	unsafe {free(head)}
-	return copy
+	//unsafe {free(head)}
+	return head.val
 }
 
 fn (list &List) push(v &Value) {
@@ -96,10 +122,7 @@ fn build_list(nums []int) &List {
 	mut node := new_node()
 	mut head := node
 	for i, num in nums {
-		head.val = &Value{
-			typ: 'int'
-			val: num.str()
-		}
+		head.val = &Value(Integer{num})
 		if i < nums.len - 1 {
 			head.next = new_node()
 			head.next.prev = head
@@ -128,20 +151,26 @@ fn print_list(list &List) {
 }
 
 pub fn test() {
-	p := build_list([1, 2, 3, 4])
+	mut p := build_list([1, 2, 3, 4])
 	print_list(p)
 	mut v := p.pop()
-	println(v)
+	println(v.to_string())
 	print_list(p)
 	v = p.poll()
-	println(v)
+	println(v.to_string())
+	mut nv := v.add_one()
+	println(nv.to_string())
 	print_list(p)
-	p.push(&Value{
-		typ: 'str'
-		val: '12'
-	})
+
+	np := Value(p).add_one() as List
+	p = &np
+
+	p.push(&Value(String{val: 'abc'}))
 	print_list(p)
-	p.pop()
+	v = p.pop()
+	println(v.to_string())
+	nv = v.add_one()
+	println(nv.to_string())
 	p.poll()
 	p.poll()
 	print_list(p)
