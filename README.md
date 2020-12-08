@@ -16,7 +16,7 @@ hello(names)
 Features:
 - easy to learn
 - dynamic typing
-- can be translated to Runtime Script
+- vee to Runtime Script translation
 
 Runtime Script:
 ```ruby
