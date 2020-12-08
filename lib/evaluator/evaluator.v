@@ -1,14 +1,19 @@
 module evaluator
 
 import lib.parser
+import lib.values
 
 pub struct Env {
 mut:
-	vars map[string]string
+	vars map[string]values.Value
 	funcs map[string][]parser.AST
 }
 
-pub fn eval(ast parser.AST, mut env Env) string {
+const (
+	nil = values.Value(values.Nil{})
+)
+
+pub fn eval(ast parser.AST, mut env Env) values.Value {
 	if ast.tag == 'stmt_list' {
 		for i, stmt in ast.list {
 			if stmt.tag == 'return' || i == ast.list.len-1 {
@@ -20,28 +25,33 @@ pub fn eval(ast parser.AST, mut env Env) string {
 	} else if ast.tag == 'operator' {
 		if ast.val == '=' {
 			env.vars[ast.list[0].val] = eval(ast.list[1], mut env)
-			return ''
+			return nil
 		}
 		left := eval(ast.list[0], mut env)
+		left_val := left as values.Integer
 		right := eval(ast.list[1], mut env)
+		right_val := right as values.Integer
 		if ast.val == '+' {
-			return '${left.int() + right.int()}'
+			return  values.new_integer(left_val.val + right_val.val)
 		} else if ast.val == '-' {
-			return '${left.int() - right.int()}'
+			return values.new_integer(left_val.val - right_val.val)
 		} else if ast.val == '*' {
-			return '${left.int() * right.int()}'
+			return values.new_integer(left_val.val * right_val.val)
 		} else if ast.val == '/' {
-			return '${left.int() / right.int()}'
+			return values.new_integer(left_val.val / right_val.val)
 		}
 	} else if ast.tag == 'name' {
 		return env.vars[ast.val]
-	} else if ast.tag == 'number' || ast.tag == 'string' {
-		return ast.val
+	} else if ast.tag == 'number' {
+		return values.new_integer(ast.val.int())
+	} else if ast.tag == 'string' {
+		return values.new_string(ast.val)
 	} else if ast.tag == 'call' {
 		if ast.val == 'print' {
 			mut res := ''
 			for v in ast.list[0].list {
-				res += eval(v, mut env) + ' '
+				arg_val := eval(v, mut env)
+				res += '${arg_val.to_val_string()} '
 			}
 			println(res)
 		} else if ast.val in env.funcs {
@@ -55,5 +65,5 @@ pub fn eval(ast parser.AST, mut env Env) string {
 	} else if ast.tag == 'return' {
 		return eval(ast.list[0], mut env)
 	}
-	return ''
+	return nil
 }

@@ -39,11 +39,11 @@ hello()
 	println(ast)
 	println('=================')
 	mut env := evaluator.Env{
-		vars: map[string]string{}
+		vars: map[string]values.Value{}
 		funcs: map[string][]parser.AST{}
 	}
 	evaluator.eval(ast, mut env)
 	println(env)
-	values.test()
+	//values.test()
 	// util.test()
 }

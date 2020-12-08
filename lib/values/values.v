@@ -5,16 +5,31 @@ const (
 )
 
 struct Integer {
+pub:
 	val int
 }
 
 struct String {
+pub:
 	val string
 }
 
-struct Nil {}
+struct ListValue {
+pub:
+	val &List
+}
 
-type Value = Integer | String | List | Nil
+pub struct Nil {}
+
+type Value = Integer | String | ListValue | Nil
+
+pub fn new_integer(val int) Integer {
+	return Integer{val}
+}
+
+pub fn new_string(val string) String {
+	return String{val}
+}
 
 fn (v Value) add_one() Value {
 	if v.type_name() == 'lib.values.Integer' {
@@ -23,12 +38,26 @@ fn (v Value) add_one() Value {
 	} else if v.type_name() == 'lib.values.String' {
 		s := v as String
 		return Value(String{s.val + '1'})
-	} else if v.type_name() == 'lib.values.List' {
-		l := v as List
-		l.push(&Value(String{val: 'new'}))
+	} else if v.type_name() == 'lib.values.ListValue' {
+		l := v as ListValue
+		l.val.push(&Value(String{val: 'new'}))
 		return Value(l)
 	}
 	return Value(Nil{})
+}
+
+fn (v Value) copy_value() &Value {
+	if v.type_name() == 'lib.values.Integer' {
+		num := v as Integer
+		return &Value(Integer{num.val})
+	} else if v.type_name() == 'lib.values.String' {
+		s := v as String
+		return &Value(String{s.val})
+	} else if v.type_name() == 'lib.values.ListValue' {
+		l := v as ListValue
+		return &Value(ListValue{l.val})
+	}
+	return &Value(Nil{})
 }
 
 pub fn (v Integer) to_string() string {
@@ -46,6 +75,21 @@ pub fn (v Value) to_string() string {
 	} else if v.type_name() == 'lib.values.String' {
 		s := v as String
 		return s.to_string()
+	}
+	return ''
+}
+
+fn (v Value) str() string {
+	return v.to_string()
+}
+
+pub fn (v Value) to_val_string() string {
+	if v.type_name() == 'lib.values.Integer' {
+		num := v as Integer
+		return '${num.val}'
+	} else if v.type_name() == 'lib.values.String' {
+		s := v as String
+		return '${s.val}'
 	}
 	return ''
 }
@@ -68,7 +112,7 @@ fn (list &List) pop() &Value {
 		return null
 	}
 	mut tail := list.tail
-	//copy := &Value{val: tail.val.val}
+	copy := tail.val.copy_value()
 	mut the_list := list
 	if tail.prev == null {
 		the_list.tail = null
@@ -77,8 +121,8 @@ fn (list &List) pop() &Value {
 		tail.prev.next = null
 		the_list.tail = tail.prev
 	}
-	//unsafe {free(tail)}
-	return tail.val
+	unsafe {free(tail)}
+	return copy
 }
 
 fn (list &List) poll() &Value {
@@ -86,7 +130,7 @@ fn (list &List) poll() &Value {
 		return null
 	}
 	mut head := list.head
-	//copy := &Value(Integer{val: head.val.val})
+	copy := head.val.copy_value()
 	mut the_list := list
 	if head.next == null {
 		the_list.tail = null
@@ -95,8 +139,8 @@ fn (list &List) poll() &Value {
 		head.next.prev = null
 		the_list.head = head.next
 	}
-	//unsafe {free(head)}
-	return head.val
+	unsafe {free(head)}
+	return copy
 }
 
 fn (list &List) push(v &Value) {
@@ -162,8 +206,8 @@ pub fn test() {
 	println(nv.to_string())
 	print_list(p)
 
-	np := Value(p).add_one() as List
-	p = &np
+	Value(ListValue{p}).add_one()
+	print_list(p)
 
 	p.push(&Value(String{val: 'abc'}))
 	print_list(p)
