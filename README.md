@@ -1,7 +1,7 @@
-# runtime-v
-Runtime Script II written in [vlang](https://vlang.io/)
+# vee Script
+A programming language written in [vlang](https://vlang.io/)
 
-Runtime Script II example:
+What vee looks like:
 ```v
 fn hello(names) {
 	for name in names {
@@ -13,7 +13,12 @@ names = ['Wrold', 'yjlo']
 hello(names)
 ```
 
-Original Runtime Script:
+Features:
+- easy to learn
+- dynamic typing
+- can be translated to Runtime Script
+
+Runtime Script:
 ```ruby
 def hello
  let _names $0
@@ -32,5 +37,5 @@ psh $names 'World' 'yjlo'
 cal hello $names
 ```
 
-Learn more about the original Runtime Script:  
+Learn more about Runtime Script:  
 https://github.com/yjlo123/runtime-script
