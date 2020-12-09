@@ -97,7 +97,8 @@ pub fn parse(tokens []lexer.Token) AST {
 				i++
 			}
 			mut return_val := []AST{}
-			return_val << parse(tokens[return_val_start..i])
+			// TODO check return nothing
+			return_val << parse(tokens[return_val_start..i]).list[0] // since parse returns a stmt_list
 			stmt_list << AST{
 				tag: 'return'
 				val: ''

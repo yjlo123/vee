@@ -19,9 +19,10 @@ pub:
 	val &List
 }
 
-pub struct Nil {}
+pub struct Nil {
+}
 
-type Value = Integer | String | ListValue | Nil
+type Value = Integer | ListValue | Nil | String
 
 pub fn new_integer(val int) Integer {
 	return Integer{val}
@@ -40,7 +41,9 @@ fn (v Value) add_one() Value {
 		return Value(String{s.val + '1'})
 	} else if v.type_name() == 'lib.values.ListValue' {
 		l := v as ListValue
-		l.val.push(&Value(String{val: 'new'}))
+		l.val.push(&Value(String{
+			val: 'new'
+		}))
 		return Value(l)
 	}
 	return Value(Nil{})
@@ -86,10 +89,10 @@ fn (v Value) str() string {
 pub fn (v Value) to_val_string() string {
 	if v.type_name() == 'lib.values.Integer' {
 		num := v as Integer
-		return '${num.val}'
+		return '$num.val'
 	} else if v.type_name() == 'lib.values.String' {
 		s := v as String
-		return '${s.val}'
+		return '$s.val'
 	}
 	return ''
 }
@@ -205,11 +208,11 @@ pub fn test() {
 	mut nv := v.add_one()
 	println(nv.to_string())
 	print_list(p)
-
 	Value(ListValue{p}).add_one()
 	print_list(p)
-
-	p.push(&Value(String{val: 'abc'}))
+	p.push(&Value(String{
+		val: 'abc'
+	}))
 	print_list(p)
 	v = p.pop()
 	println(v.to_string())

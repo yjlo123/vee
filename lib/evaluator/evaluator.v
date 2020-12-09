@@ -5,7 +5,7 @@ import lib.values
 
 pub struct Env {
 mut:
-	vars map[string]values.Value
+	vars  map[string]values.Value
 	funcs map[string][]parser.AST
 }
 
@@ -16,7 +16,7 @@ const (
 pub fn eval(ast parser.AST, mut env Env) values.Value {
 	if ast.tag == 'stmt_list' {
 		for i, stmt in ast.list {
-			if stmt.tag == 'return' || i == ast.list.len-1 {
+			if stmt.tag == 'return' || i == ast.list.len - 1 {
 				return eval(stmt, mut env)
 			} else {
 				eval(stmt, mut env)
@@ -32,7 +32,7 @@ pub fn eval(ast parser.AST, mut env Env) values.Value {
 		right := eval(ast.list[1], mut env)
 		right_val := right as values.Integer
 		if ast.val == '+' {
-			return  values.new_integer(left_val.val + right_val.val)
+			return values.new_integer(left_val.val + right_val.val)
 		} else if ast.val == '-' {
 			return values.new_integer(left_val.val - right_val.val)
 		} else if ast.val == '*' {
@@ -51,7 +51,7 @@ pub fn eval(ast parser.AST, mut env Env) values.Value {
 			mut res := ''
 			for v in ast.list[0].list {
 				arg_val := eval(v, mut env)
-				res += '${arg_val.to_val_string()} '
+				res += '$arg_val.to_val_string() '
 			}
 			println(res)
 		} else if ast.val in env.funcs {
