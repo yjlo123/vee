@@ -9,6 +9,7 @@ mut:
 }
 
 fn (s Stack) str() string {
+	// for debugging
 	mut list_content := ''
 	for i, n in s.data {
 		if i > 0 {
