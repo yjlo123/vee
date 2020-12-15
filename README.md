@@ -1,7 +1,7 @@
 # vee Script
 A programming language written in [vlang](https://vlang.io/)
 
-What vee looks like:
+What does vee look like:
 ```v
 fn hello(names) {
     for name in names {
