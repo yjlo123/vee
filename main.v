@@ -36,6 +36,6 @@ hello()
 	evaluator.eval(ast, mut env)
 	println('====== ENV ======')
 	println(env)
-	// values.test()
+	values.test()
 	// util.test()
 }
