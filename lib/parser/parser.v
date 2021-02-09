@@ -4,11 +4,12 @@ import lib.lexer
 import lib.util
 
 pub fn parse(tokens []lexer.Token) AST {
-	// println('Token:$tokens')
+	// println('Tokens:$tokens')
 	mut stmt_list := []AST{}
 	mut line_start := 0
 	for i := 0; i < tokens.len; i++ {
 		token := tokens[i]
+		// println('Token:$token')
 		if token.typ == lexer.TokenType.func {
 			// === Func Denifination ===
 			mut func_detail := []AST{} // params, body
