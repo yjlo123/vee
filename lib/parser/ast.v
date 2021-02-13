@@ -30,8 +30,20 @@ fn new_ast(tag string, val string, list []AST) AST {
 	}
 }
 
+pub fn pretty_print_ast_safe(ast AST, indent string, last bool, mut res []string) {
+	head := if last { '└' } else { '├' }
+	res << '$indent${head}($ast.tag) $ast.val'
+	child_head := if last { ' ' } else { '│' }
+	if ast.list.len > 0 {
+		for i, l in ast.list {
+			pretty_print_ast_safe(l, indent + '$child_head   ', i == ast.list.len - 1, mut res)
+		}
+	}
+}
+
 pub fn pretty_print_ast(ast AST, indent string, last bool) {
 	head := if last { '└' } else { '├' }
+	// there is a bug in println in recursion since vlang v0.2 on Windows
 	println('$indent${head}($ast.tag) $ast.val')
 	child_head := if last { ' ' } else { '│' }
 	if ast.list.len > 0 {
