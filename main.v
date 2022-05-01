@@ -8,9 +8,9 @@ import lib.values
 fn main() {
 	exmaple_file := './example.vee'
 	program_src := os.read_file(exmaple_file) or {
-        panic('error reading file $exmaple_file')
-        return
-    }
+		panic('error reading file $exmaple_file')
+		return
+	}
 
 	tokens := lexer.tokenize(program_src)
 	println('===== Tokens =====')
