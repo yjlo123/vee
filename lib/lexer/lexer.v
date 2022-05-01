@@ -6,7 +6,7 @@ const (
 		'<=', '=', '==', ',', ';']
 )
 
-enum TokenType {
+pub enum TokenType {
 	name
 	string
 	number
@@ -66,15 +66,15 @@ pub fn tokenize(s string) []Token {
 				lc++
 				cc = -1
 			}
-		} else if s[i..i+1] in operators {
+		} else if s[i..i + 1] in lexer.operators {
 			// operator
 			if token.len > 0 {
 				tokens << create_token(token, TokenType.name, lc, cc - token.len)
 				token = ''
 			}
-			mut op := s[i..i+1]
-			for op + s[i+1..i+2] in operators {
-				op += s[i+1..i+2]
+			mut op := s[i..i + 1]
+			for op + s[i + 1..i + 2] in lexer.operators {
+				op += s[i + 1..i + 2]
 				i++
 			}
 			tokens << create_token(op, TokenType.operator, lc, cc)
@@ -84,8 +84,8 @@ pub fn tokenize(s string) []Token {
 				tokens << create_token(token, TokenType.name, lc, cc - token.len)
 				token = ''
 			}
-			tokens << create_token(s[i..i+1], TokenType.bracket, lc, cc)
-		} else if s[i] in [`\'`, `"`, '`'[0]] {
+			tokens << create_token(s[i..i + 1], TokenType.bracket, lc, cc)
+		} else if s[i] in [`'`, `"`, '`'[0]] {
 			// string
 			q := s[i]
 			i++
@@ -95,7 +95,7 @@ pub fn tokenize(s string) []Token {
 					token = ''
 					break
 				}
-				token += s[i..i+1]
+				token += s[i..i + 1]
 				i++
 			}
 		} else if s[i] >= `0` && s[i] <= `9` && token.len == 0 {
@@ -106,12 +106,12 @@ pub fn tokenize(s string) []Token {
 					token = ''
 					break
 				}
-				token += s[i..i+1]
+				token += s[i..i + 1]
 				i++
 			}
 			i--
 		} else {
-			token += s[i..i+1]
+			token += s[i..i + 1]
 		}
 		i++
 		cc++

@@ -17,7 +17,7 @@ pub:
 }
 
 struct ListValue {
-pub:
+pub mut:
 	val &List
 }
 
@@ -38,14 +38,14 @@ pub fn new_string(val string) String {
 }
 
 fn (v Value) add_one() Value {
-	if v.type_name() == type_integer {
+	if v.type_name() == values.type_integer {
 		num := v as Integer
 		return Value(Integer{num.val + 1})
-	} else if v.type_name() == type_string {
+	} else if v.type_name() == values.type_string {
 		s := v as String
 		return Value(String{s.val + '1'})
-	} else if v.type_name() == type_list {
-		l := v as ListValue
+	} else if v.type_name() == values.type_list {
+		mut l := v as ListValue
 		l.val.push(&Value(String{
 			val: 'new'
 		}))
@@ -55,13 +55,13 @@ fn (v Value) add_one() Value {
 }
 
 fn (v Value) copy_value() &Value {
-	if v.type_name() == type_integer {
+	if v.type_name() == values.type_integer {
 		num := v as Integer
 		return &Value(Integer{num.val})
-	} else if v.type_name() == type_string {
+	} else if v.type_name() == values.type_string {
 		s := v as String
 		return &Value(String{s.val})
-	} else if v.type_name() == type_list {
+	} else if v.type_name() == values.type_list {
 		l := v as ListValue
 		return &Value(ListValue{l.val})
 	}
@@ -77,10 +77,10 @@ pub fn (v String) to_string() string {
 }
 
 pub fn (v Value) to_string() string {
-	if v.type_name() == type_integer {
+	if v.type_name() == values.type_integer {
 		num := v as Integer
 		return num.to_string()
-	} else if v.type_name() == type_string {
+	} else if v.type_name() == values.type_string {
 		s := v as String
 		return s.to_string()
 	}
@@ -92,10 +92,10 @@ fn (v Value) str() string {
 }
 
 pub fn (v Value) to_val_string() string {
-	if v.type_name() == type_integer {
+	if v.type_name() == values.type_integer {
 		num := v as Integer
 		return '$num.val'
-	} else if v.type_name() == type_string {
+	} else if v.type_name() == values.type_string {
 		s := v as String
 		return '$s.val'
 	}
@@ -105,11 +105,13 @@ pub fn (v Value) to_val_string() string {
 fn build_list(nums []int) &List {
 	mut node := new_node()
 	mut head := node
+	mut next_node := node
 	for i, num in nums {
 		head.val = &Value(Integer{num})
 		if i < nums.len - 1 {
 			head.set_next(new_node())
-			head.get_next().set_prev(head)
+			next_node = head.get_next()
+			next_node.set_prev(head)
 			head = head.get_next()
 		}
 	}

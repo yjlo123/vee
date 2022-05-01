@@ -26,7 +26,7 @@ hello()
 
 	ast := parser.parse(tokens)
 	println('====== AST ======')
-	//parser.pretty_print_ast(ast, '', true)
+	// parser.pretty_print_ast(ast, '', true)
 	mut ast_print := []string{}
 	parser.pretty_print_ast_safe(ast, '', true, mut ast_print)
 	for _, l in ast_print {

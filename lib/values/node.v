@@ -9,7 +9,7 @@ pub mut:
 
 fn new_node() &ListNode {
 	return &ListNode{
-		val: &Value{}
+		val: &Empty{}
 		prev: []
 		next: []
 	}

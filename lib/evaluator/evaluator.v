@@ -25,7 +25,7 @@ pub fn eval(ast parser.AST, mut env Env) values.Value {
 	} else if ast.tag == 'operator' {
 		if ast.val == '=' {
 			env.vars[ast.list[0].val] = eval(ast.list[1], mut env)
-			return nil
+			return evaluator.nil
 		}
 		left := eval(ast.list[0], mut env)
 		left_val := left as values.Integer
@@ -41,7 +41,7 @@ pub fn eval(ast parser.AST, mut env Env) values.Value {
 			return values.new_integer(left_val.val / right_val.val)
 		}
 	} else if ast.tag == 'name' {
-		return env.vars[ast.val]
+		return env.vars[ast.val] or { panic('Var name not found') }
 	} else if ast.tag == 'number' {
 		return values.new_integer(ast.val.int())
 	} else if ast.tag == 'string' {
@@ -65,5 +65,5 @@ pub fn eval(ast parser.AST, mut env Env) values.Value {
 	} else if ast.tag == 'return' {
 		return eval(ast.list[0], mut env)
 	}
-	return nil
+	return evaluator.nil
 }

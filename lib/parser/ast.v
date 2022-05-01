@@ -36,7 +36,8 @@ pub fn pretty_print_ast_safe(ast AST, indent string, last bool, mut res []string
 	child_head := if last { ' ' } else { '│' }
 	if ast.list.len > 0 {
 		for i, l in ast.list {
-			pretty_print_ast_safe(l, indent + '$child_head   ', i == ast.list.len - 1, mut res)
+			pretty_print_ast_safe(l, indent + '$child_head   ', i == ast.list.len - 1, mut
+				res)
 		}
 	}
 }
