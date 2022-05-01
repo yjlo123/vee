@@ -25,22 +25,27 @@ hello()
 	lexer.pretty_print_tokens(tokens)
 
 	ast := parser.parse(tokens)
-	println('====== AST ======')
 	// parser.pretty_print_ast(ast, '', true)
 	mut ast_print := []string{}
 	parser.pretty_print_ast_safe(ast, '', true, mut ast_print)
+
+	println('====== AST ======')
 	for _, l in ast_print {
 		println(l)
 	}
-	println('=================')
 
 	mut env := evaluator.Env{
 		vars: map[string]values.Value{}
 		funcs: map[string][]parser.AST{}
 	}
+
+	println('====== RESULT ======')
 	evaluator.eval(ast, mut env)
+
 	println('====== ENV ======')
 	println(env)
+
+	println('====== TEST ======')
 	values.test()
 	// util.test()
 }
