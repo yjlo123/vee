@@ -1,3 +1,4 @@
+import os
 // import lib.util
 import lib.evaluator
 import lib.lexer
@@ -5,21 +6,12 @@ import lib.parser
 import lib.values
 
 fn main() {
-	program_src := '
-fn add(c, b) {
-	return c + b
-}
-fn double(a) {return a * 2}
-fn hello()
-{
-	print("hello")
-	print("welcome")
-}
+	exmaple_file := './example.vee'
+	program_src := os.read_file(exmaple_file) or {
+        panic('error reading file $exmaple_file')
+        return
+    }
 
-print(double(2+(4-1)*3)+1)
-print(double(add(add(1, 4+5), 5)))
-hello()
-'
 	tokens := lexer.tokenize(program_src)
 	println('===== Tokens =====')
 	lexer.pretty_print_tokens(tokens)
